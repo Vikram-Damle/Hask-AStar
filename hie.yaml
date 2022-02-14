@@ -1,0 +1,13 @@
+cradle:
+  cabal:
+    - path: "src"
+      component: "lib:A1"
+
+    - path: "app/Main.hs"
+      component: "A1:exe:A1-exe"
+
+    - path: "app/Paths_A1.hs"
+      component: "A1:exe:A1-exe"
+
+    - path: "test"
+      component: "A1:test:A1-test"
