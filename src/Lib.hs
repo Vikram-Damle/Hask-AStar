@@ -1,9 +1,10 @@
 module Lib (
-    module Types,
-    module Utils,
-    module Heuristics,
-    module Change,
-    module Search
+      module Types
+    , module Utils
+    , module Heuristics
+    , module Change
+    , module Search
+    , module Input
 ) where
 
 import Types
@@ -11,3 +12,4 @@ import Utils
 import Heuristics
 import Change
 import Search
+import Input

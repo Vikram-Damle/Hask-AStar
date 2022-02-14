@@ -5,7 +5,7 @@ import Types
       CostFunc,
       Node(Node, sunkCost, bstate),
       SearchState(SearchState, heurFunc, final, open, closed) )
-import Utils ( isSolvable, getFin )
+import Utils ( isSolvable, getFin, checkFin )
 import Change ( getNewChildren ) 
 
 import Control.Monad.State.Lazy
@@ -32,15 +32,21 @@ step = do
   let h = heurFunc s
   let cs = getNewChildren cl . bstate $ b
   let ns = map (makechild h b) cs
-  case getFin ns of
-    Just n  -> do
-      put s {final = n}
-      return n
-    Nothing -> do
-      let op' = foldl' (flip insert) (delete b op) ns
-      let cl' = insert (bstate b) cl
-      put s {open = op', closed = cl'}
-      step
+  if checkFin b
+    then 
+      -- put (s {final = b})
+      return b
+    else do
+      case getFin ns of
+        Just n  -> do
+          put s {final = n}
+          return n
+        Nothing -> do
+          let op' = foldl' (flip insert) (delete b op) ns
+          let cl' = insert (bstate b) cl
+          put s {open = op', closed = cl'}
+          step
+
 
 
 constructInitial :: CostFunc -> BoardState -> SearchState

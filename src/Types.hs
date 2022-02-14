@@ -50,7 +50,7 @@ data SearchState = SearchState
 data Move = Up | Down | Left | Right
 
 type CostFunc = BoardState -> Int
-
+type Heuristic = (CostFunc, String)
 
 hash :: BoardState -> Int
 hash b = n

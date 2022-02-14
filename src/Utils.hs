@@ -9,7 +9,7 @@ import Types
 import Consts ( hidx, lidx, nunit1, nunit2, unit1, unit2 )
 -- import System.Random
 import Data.Array ( (!), (//), elems, listArray )
-import Data.List (nub, find)
+import Data.List (nub, find, sort)
 import Data.Set (size)
 import Data.Maybe (fromJust)
 import Data.Either (fromRight)
@@ -18,7 +18,7 @@ import Data.Either (fromRight)
 -- Setting up board
 
 hasDup :: [Int] -> Bool
-hasDup xs = nub xs /= xs
+hasDup xs = length (nub xs) /= length xs
 
 toBoard :: [Int] -> BoardState
 toBoard xs = if length xs /= 9 || hasDup []
@@ -39,6 +39,9 @@ isSolvable b = even flips
       | otherwise = (length . filter id $ map (<x) xs) + count xs
     count [] = 0
 
+
+isValid :: BoardState -> Bool
+isValid b = (not . hasDup . fromBoard $ b) && all (`elem` ([0..8] :: [Int])) (fromBoard b)
 
 -- Functions over coordinates
 
@@ -104,13 +107,13 @@ path :: SearchState -> [BoardState]
 path s = map bstate (go fn [])
   where
     fn = final s
-    go n ns 
+    go n ns
       | root n    = n:ns
       | otherwise = go (parent n) (n:ns)
 
-showSearchResults :: Either BoardState SearchState -> String
-showSearchResults (Left b) = "Unsolvable Initial State:\n" ++ showBoard b
-showSearchResults (Right s) = str 
+showSearchResults :: Either BoardState SearchState -> String -> String
+showSearchResults (Left b) _ = "Unsolvable Initial State:\n" ++ showBoard b
+showSearchResults (Right s) name = str
   where
     b = initial s
     str1 = "Initial State:\n" ++ showBoard b
@@ -118,6 +121,6 @@ showSearchResults (Right s) = str
     str3 = "Number of Nodes Removed from Frontier: " ++  (show . size . closed)  s
     str4 = "Solution Length: " ++ show (length . path $ s) ++ " Nodes"
     str5 = "" -- ++ (unlines . map showBoard . path $ s)
-    str6 = replicate 40 '=' 
-    str  = unlines [str1, str2, str3, str4, str5, str6]
+    str6 = replicate 40 '='
+    str  = unlines [name ++ "\n", str1, str2, str3, str4, str5, str6]
 
