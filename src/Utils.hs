@@ -7,7 +7,7 @@ import Types
       Node(root, parent, bstate),
       SearchState(final, initial, closed) )
 import Consts ( hidx, lidx, nunit1, nunit2, unit1, unit2 )
--- import System.Random
+
 import Data.Array ( (!), (//), elems, listArray )
 import Data.List (nub, find, sort)
 import Data.Set (size)
@@ -33,7 +33,8 @@ fromBoard = map fromEnum . elems
 isSolvable :: BoardState -> Bool
 isSolvable b = even flips
   where
-    flips = count (elems b)
+    nonempty = filter (/= Empty) (elems b)
+    flips = count nonempty
     count (x:xs)
       | x == Empty = count xs
       | otherwise = (length . filter id $ map (<x) xs) + count xs
@@ -117,10 +118,16 @@ showSearchResults (Right s) name = str
   where
     b = initial s
     str1 = "Initial State:\n" ++ showBoard b
-    str2 = "Final State:\n"   ++ showBoard (bstate . final $ s)
+    str2 = "" -- ++ "Final State:\n"   ++ showBoard (bstate . final $ s)
     str3 = "Number of Nodes Removed from Frontier: " ++  (show . size . closed)  s
     str4 = "Solution Length: " ++ show (length . path $ s) ++ " Nodes"
     str5 = "" -- ++ (unlines . map showBoard . path $ s)
     str6 = replicate 40 '='
     str  = unlines [name ++ "\n", str1, str2, str3, str4, str5, str6]
 
+getStats :: Either BoardState SearchState -> String -> (String, Int, Int)
+getStats (Left b) _ = error $ "Unsolvable" ++ showBoard b
+getStats (Right s) name = (name, expl, len)
+  where
+    expl = size . closed $ s
+    len = length . path $ s

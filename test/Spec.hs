@@ -2,7 +2,7 @@ import Criterion.Main
 import qualified Control.DeepSeq as DS
 
 import Lib
-import Samples
+-- import Samples
 
 
 main :: IO ()
@@ -17,11 +17,13 @@ instance DS.NFData SearchState where
 
 
 testStates :: [(BoardState, String)]
-testStates = [state1, state2, state3]
+testStates = zip states names
+
+names = ["State 1", "State 2", "State 3", "State 4", "State 5", "State 6", "State 7", "State 8", "State 9", "State 10"]
 
 benchmarks :: (BoardState, String) -> Benchmark
-benchmarks (s, name) = bgroup name [
-        bench "Misplaced Tile Heuristic" $ nf (solve misplacedTile) s,
-        bench "Manhattan Dist Heuristic" $ nf (solve manhattanDist) s
-        -- bench "State 3" $ nf (solve misplacedTile) state3
-      ]
+benchmarks (s, name) = bgroup name $ map (($s) . run) (tail heuristics)
+
+
+run :: Heuristic -> BoardState -> Benchmark
+run (h, s) = bench s . nf (solve h)

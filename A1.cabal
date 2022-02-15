@@ -30,6 +30,7 @@ library
       Heuristics
       Input
       Lib
+      Samples
       Search
       Types
       Utils
@@ -61,7 +62,6 @@ test-suite A1-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      Samples
       Paths_A1
   hs-source-dirs:
       test

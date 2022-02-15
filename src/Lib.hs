@@ -5,6 +5,7 @@ module Lib (
     , module Change
     , module Search
     , module Input
+    , module Samples
 ) where
 
 import Types
@@ -13,3 +14,4 @@ import Heuristics
 import Change
 import Search
 import Input
+import Samples
