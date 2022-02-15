@@ -42,7 +42,7 @@ Initial States:
 
 State 1
 Misplaced Tile
-Explored 1229
+Explored 12291
 Length 19
 
 
